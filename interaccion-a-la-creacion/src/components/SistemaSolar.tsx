@@ -1,6 +1,9 @@
+// src/components/SistemaSolar.tsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
-interface Planet {
+export interface Planet {
   id: number;
   name: string;
   color: string;
@@ -14,7 +17,7 @@ interface Planet {
   icon: string;
 }
 
-const planets: Planet[] = [
+export const planets: Planet[] = [
   {
     id: 1,
     name: 'Mercurio',
@@ -122,208 +125,140 @@ const planets: Planet[] = [
 ];
 
 export default function SistemaSolar() {
+  const navigate = useNavigate();
   const [selectedPlanet, setSelectedPlanet] = useState<Planet | null>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-950 via-purple-950 to-black p-2 md:p-4 overflow-hidden relative">
-      {/* Estrellas titilantes de fondo */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 150 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute bg-white rounded-full"
-            style={{
-              width: Math.random() * 3 + 1 + 'px',
-              height: Math.random() * 3 + 1 + 'px',
-              top: Math.random() * 100 + '%',
-              left: Math.random() * 100 + '%',
-              animation: `twinkle ${Math.random() * 3 + 2}s ease-in-out infinite`,
-              animationDelay: Math.random() * 3 + 's',
-              opacity: Math.random() * 0.7 + 0.3
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Header con botón de regreso */}
-      <div className="relative z-10 mb-4 md:mb-6">
-        <button
-          onClick={() => window.location.href = '/'}
-          className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 text-gray-900 font-bold py-2 px-5 md:py-3 md:px-6 rounded-full hover:scale-105 transition-all shadow-xl text-sm md:text-base flex items-center gap-2 border-2 border-yellow-200"
-        >
-          <span className="text-lg">←</span>
-          <span>Volver al Inicio</span>
-        </button>
-        
-        <div className="text-center mt-4">
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-2xl mb-2">
-            🌌 Sistema Solar Interactivo 🚀
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-black overflow-hidden">
+      {/* Header */}
+      <div className="absolute top-0 left-0 right-0 z-40 p-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-lg text-white rounded-xl hover:bg-white/20 transition-all border border-white/20"
+          >
+            <ArrowLeft size={20} />
+            <span className="font-semibold">Volver</span>
+          </button>
+          <h1 className="text-2xl md:text-4xl font-bold text-white drop-shadow-lg">
+            ✨ Sistema Solar
           </h1>
-          <p className="text-sm md:text-lg text-blue-200 font-medium drop-shadow-lg max-w-2xl mx-auto px-4">
-            ✨ Observa los planetas girar alrededor del Sol, haz clic en cualquiera y descubre datos curiosos fascinantes ✨
-          </p>
+          <div className="w-24"></div>
         </div>
       </div>
 
-      {/* Sistema Solar con órbitas */}
-      <div className="relative z-10 h-[350px] md:h-[500px] flex items-center justify-center">
-        {/* Órbitas */}
-        {planets.map((planet, index) => {
-          const orbitRadius = 60 + index * 40;
-          return (
-            <div
-              key={`orbit-${planet.id}`}
-              className={`absolute rounded-full border-2 transition-all duration-500 border-white/20`}
-              style={{
-                width: `${orbitRadius * 2}px`,
-                height: `${orbitRadius * 2}px`,
-              }}
-            />
-          );
-        })}
-
-        {/* Sol */}
-        <div className="absolute w-16 h-16 md:w-24 md:h-24 flex items-center justify-center z-20">
-          <div className="absolute inset-0">
-            {Array.from({ length: 12 }).map((_, i) => (
+      {/* Sistema Solar */}
+      <div className="flex items-center justify-center min-h-screen p-4">
+        <div className="relative" style={{ width: '700px', height: '700px' }}>
+          {/* Órbitas */}
+          {planets.map((planet, index) => {
+            const orbitRadius = 60 + index * 40;
+            return (
               <div
-                key={i}
-                className="absolute w-0.5 md:w-1 h-16 md:h-24 bg-gradient-to-t from-yellow-400/50 to-transparent"
+                key={`orbit-${planet.id}`}
+                data-testid={`orbit-${planet.name}`}
+                className="absolute rounded-full border-2 border-white/20"
                 style={{
-                  left: '50%',
+                  width: `${orbitRadius * 2}px`,
+                  height: `${orbitRadius * 2}px`,
                   top: '50%',
-                  transform: `rotate(${i * 30}deg) translateY(-50%)`,
-                  transformOrigin: 'center',
-                  animation: 'rotate 20s linear infinite'
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)'
                 }}
               />
-            ))}
-          </div>
-          
-          <div className="relative w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-yellow-300 via-yellow-400 to-orange-500 rounded-full shadow-2xl flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full bg-yellow-400 animate-ping opacity-30"></div>
-            <div className="absolute inset-0 rounded-full bg-yellow-300 blur-xl opacity-60"></div>
-            <span className="text-xl md:text-4xl relative z-10">☀️</span>
-          </div>
-        </div>
+            );
+          })}
 
-        {/* Planetas girando con nombres SIEMPRE visibles */}
-        {planets.map((planet, index) => {
-          const orbitRadius = 60 + index * 40;
-          const speed = 20 + index * 5;
-
-          return (
-            <div
-              key={planet.id}
-              className="absolute pointer-events-none"
-              style={{
-                width: `${orbitRadius * 2}px`,
-                height: `${orbitRadius * 2}px`,
-                animation: `orbit ${speed}s linear infinite`,
-                animationDelay: `${-index * 2}s`
-              }}
+          {/* Sol */}
+          <div className="absolute w-16 h-16 md:w-24 md:h-24 flex items-center justify-center z-20"
+               style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            <div className="absolute inset-0">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-0.5 md:w-1 h-16 md:h-24 bg-gradient-to-t from-yellow-400/50 to-transparent"
+                  style={{
+                    left: '50%',
+                    top: '50%',
+                    transform: `rotate(${i * 30}deg) translateY(-50%)`,
+                    transformOrigin: 'center'
+                  }}
+                />
+              ))}
+            </div>
+            <div 
+              data-testid="sun"
+              className="relative w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-yellow-300 via-yellow-400 to-orange-500 rounded-full shadow-2xl flex items-center justify-center"
             >
+              <div className="absolute inset-0 rounded-full bg-yellow-400 animate-ping opacity-30"></div>
+              <div className="absolute inset-0 rounded-full bg-yellow-300 blur-xl opacity-60"></div>
+              <span className="text-xl md:text-4xl relative z-10">☀️</span>
+            </div>
+          </div>
+
+          {/* Planetas */}
+          {planets.map((planet, index) => {
+            const orbitRadius = 60 + index * 40;
+
+            return (
               <div
-                className="absolute"
+                key={planet.id}
+                data-testid={`planet-${planet.name}`}
+                className="absolute pointer-events-none"
                 style={{
-                  top: '0',
+                  width: `${orbitRadius * 2}px`,
+                  height: `${orbitRadius * 2}px`,
+                  top: '50%',
                   left: '50%',
-                  transform: 'translateX(-50%)',
+                  transform: 'translate(-50%, -50%)'
                 }}
               >
-                <button
-                  onClick={() => setSelectedPlanet(planet)}
-                  className={`${planet.color} rounded-full shadow-xl hover:scale-125 transition-all duration-300 cursor-pointer flex items-center justify-center font-bold hover:shadow-2xl hover:z-30 group pointer-events-auto relative`}
-                  style={{
-                    width: `${planet.size}px`,
-                    height: `${planet.size}px`,
-                  }}
-                  aria-label={`Ver información de ${planet.name}`}
-                >
-                  <div className={`absolute inset-0 rounded-full ${planet.color} opacity-50 blur-md group-hover:opacity-100 transition-opacity`}></div>
-                </button>
-
-                {/* Etiqueta del nombre SIEMPRE VISIBLE */}
                 <div
-                  className={`absolute left-1/2 transform -translate-x-1/2 bg-gradient-to-r ${planet.accentColor} text-white px-2 py-0.5 md:px-3 md:py-1 rounded-full whitespace-nowrap font-bold shadow-lg border border-white/40 opacity-100 text-[10px] md:text-xs`}
+                  className="absolute"
                   style={{
-                    animation: 'float 2s ease-in-out infinite',
-                    bottom: `-${planet.size / 2 + 16}px`,
-                    pointerEvents: 'none'
+                    top: '0',
+                    left: '50%',
+                    transform: 'translateX(-50%)'
                   }}
                 >
-                  {planet.icon} {planet.name}
+                  <button
+                    onClick={() => setSelectedPlanet(planet)}
+                    className={`${planet.color} rounded-full shadow-xl hover:scale-125 transition-all duration-300 cursor-pointer flex items-center justify-center font-bold hover:shadow-2xl group pointer-events-auto relative`}
+                    style={{
+                      width: `${planet.size}px`,
+                      height: `${planet.size}px`
+                    }}
+                  >
+                    <div
+                      className={`absolute inset-0 rounded-full ${planet.color} opacity-50 blur-md group-hover:opacity-100 transition-opacity`}
+                    ></div>
+                  </button>
+                  <div
+                    className={`absolute left-1/2 transform -translate-x-1/2 bg-gradient-to-r ${planet.accentColor} text-white px-2 py-0.5 md:px-3 md:py-1 rounded-full whitespace-nowrap font-bold shadow-lg border border-white/40 text-[10px] md:text-xs`}
+                    style={{
+                      bottom: `-${planet.size / 2 + 16}px`
+                    }}
+                  >
+                    {planet.icon} {planet.name}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      {/* CSS para animaciones */}
-      <style>{`
-        @keyframes orbit {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateX(-50%) translateY(0px); }
-          50% { transform: translateX(-50%) translateY(-3px); }
-        }
-        
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
-        }
-        
-        @keyframes rotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        @keyframes slideInFromRight {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-
-        @keyframes slideInUp {
-          from {
-            transform: translateY(50px);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-
-        .animate-slide-in-right {
-          animation: slideInFromRight 0.3s ease-out;
-        }
-
-        .animate-slide-in-up {
-          animation: slideInUp 0.3s ease-out;
-        }
-      `}</style>
-
-      {/* Modal compacto de información */}
+      {/* Modal de Planeta */}
       {selectedPlanet && (
-        <div 
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-3 md:p-4 backdrop-blur-sm animate-slide-in-up"
+        <div
+          data-testid="planet-modal"
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-3 md:p-4 backdrop-blur-sm"
           onClick={() => setSelectedPlanet(null)}
         >
-          <div 
+          <div
             className="relative bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-2xl shadow-2xl max-w-md w-full p-4 md:p-6 border-4 border-white/50"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Botón cerrar en la esquina */}
             <button
               onClick={() => setSelectedPlanet(null)}
               className="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg font-bold text-xl hover:scale-110 transition-all z-10"
@@ -331,24 +266,21 @@ export default function SistemaSolar() {
               ✕
             </button>
 
-            {/* Header con planeta */}
             <div className="flex items-center gap-3 mb-4">
               <div
                 className={`${selectedPlanet.color} rounded-full shadow-lg flex-shrink-0`}
                 style={{
                   width: `${selectedPlanet.size * 1.5}px`,
-                  height: `${selectedPlanet.size * 1.5}px`,
+                  height: `${selectedPlanet.size * 1.5}px`
                 }}
               ></div>
               <div>
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-2">
                   {selectedPlanet.icon} {selectedPlanet.name}
                 </h2>
-                <p className="text-xs text-gray-600">Haz clic en los datos para explorar</p>
               </div>
             </div>
 
-            {/* Grid compacto de información */}
             <div className="space-y-2 mb-3">
               <div className="bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg p-2 border border-blue-300">
                 <p className="text-xs font-semibold text-blue-900 mb-0.5">📏 Distancia del Sol</p>
@@ -371,12 +303,13 @@ export default function SistemaSolar() {
               </div>
             </div>
 
-            {/* Dato curioso compacto */}
             <div className="bg-gradient-to-r from-yellow-200 to-orange-200 rounded-xl p-3 border-2 border-yellow-400">
               <p className="text-xs font-bold text-orange-900 mb-1 flex items-center gap-1">
                 <span className="text-base">💡</span> ¡Dato Curioso!
               </p>
-              <p className="text-xs text-orange-900 leading-relaxed">{selectedPlanet.curiosity}</p>
+              <p className="text-xs text-orange-900 leading-relaxed">
+                {selectedPlanet.curiosity}
+              </p>
             </div>
           </div>
         </div>

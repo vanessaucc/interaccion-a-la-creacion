@@ -1,6 +1,6 @@
 // src/routes/AppRoutes.tsx
 import { Routes, Route } from 'react-router-dom';
-import Home from '../views/Home';
+import Home from '../components/Home';
 import SistemaSolar from '../components/SistemaSolar';
 import GloboTerraqueo from '../components/GloboTerraqueo';
 import Simetria from '../components/Simetria';
